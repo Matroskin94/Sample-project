@@ -9,9 +9,8 @@ import './styles.css';
 
 class CostsLists extends Component {
 	state = {
-		blurTimer: 0,
+		activeRows: [],
 		costsArray: [],
-		activeRow: {},
 		isDeleteDisabled: true
 	}
 
@@ -21,41 +20,40 @@ class CostsLists extends Component {
 		}));
 	}
 
-	handleRowFocus = item => {
-		const { blurTimer } = this.state;
-
-		this.setState({
-			isDeleteDisabled: false,
-			activeRow: item
-		});
-
-		if (blurTimer) {
-			clearTimeout(blurTimer);
-		}
-	}
-
-	handleRowBlur = () => {
-		const blurTimer = setTimeout(() => {
-			this.setState({
-				isDeleteDisabled: true,
-				activeRow: {}
-			});
-		}, 100);
-
-		this.setState({ blurTimer });
-	}
-
 	handleDeleteCost = () => {
-		const { costsArray, activeRow } = this.state;
-		const correctedArray = costsArray.filter(item => item.id !== activeRow.id);
+		const { costsArray, activeRows } = this.state;
+		const correctedArray = costsArray.filter(item => !activeRows.includes(item.id));
 
 		this.setState({
+			isDeleteDisabled: true,
 			costsArray: correctedArray
 		});
 	}
 
+	toggleRow = rowId => {
+        const { activeRows } = this.state;
+        const result = activeRows.slice();
+
+        if(activeRows.includes(rowId)) {
+            const index = activeRows.indexOf(rowId);
+
+            result.splice(index, 1);
+        } else {
+            result.push(rowId);
+        }
+
+        this.setState({
+        	activeRows: result,
+        	isDeleteDisabled: result.length === 0
+        });
+    }
+
+	handleCheckClick = itemId => {
+		this.toggleRow(itemId);
+	}
+
 	render() {
-		const { costsArray, isDeleteDisabled } = this.state;
+		const { costsArray, isDeleteDisabled, activeRows } = this.state;
 
 		return (
 			<Panel block className='marginZero'>
@@ -63,9 +61,9 @@ class CostsLists extends Component {
 					<h1 className='marginZero'>Таблица расходов</h1>
 				</PanelHeader>
 				<CostsTable
+					activeRows={activeRows}
 					costsArray={costsArray}
-					onRowFocus={this.handleRowFocus}
-					onRowBlur={this.handleRowBlur}
+					onCheckClick={this.handleCheckClick}
 				/>
 				<CostsForm
 					onAddCost={this.handleAddCost}

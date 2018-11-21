@@ -7,7 +7,8 @@ import {
 	TableRow,
 	TableCell,
 	TableBody,
-	SortOrder
+	SortOrder,
+    Checkbox
 } from 'ufs-ui';
 
 import { noop } from '../../../utils/common';
@@ -21,12 +22,14 @@ import './styles/tableStyles.css';
 class CostsTable extends Component {
 	static propTypes = {
         costsArray: PropTypes.array,
-        onRowFocus: PropTypes.func,
+        activeRows: PropTypes.array,
+        onCheckClick: PropTypes.func
     };
 
     static defaultProps = {
         costsArray: [],
-        onRowFocus: noop
+        activeRows: [],
+        onCheckClick: noop
     };
 
     state = {
@@ -88,16 +91,16 @@ class CostsTable extends Component {
         this.setState({ sortedBy, sortOrder });
     }
 
-    handleRowFocus = item => () => {
-        const { onRowFocus } = this.props;
+    handleCheckClick = item => () => {
+        const { onCheckClick } = this.props;
 
-        onRowFocus(item);
+        onCheckClick(item.id);
     }
 
-    handleRowBlur = item => () => {
-        const { onRowBlur } = this.props;
+    isRowActive = item => {
+        const { activeRows } = this.props;
 
-        onRowBlur(item);
+        return activeRows.includes(item.id);
     }
 
 	renderColumns = () => {
@@ -119,10 +122,14 @@ class CostsTable extends Component {
 
 		return sortedArray.map(item => (
 			<TableRow
-                onBlur={this.handleRowBlur(item)}
-                onFocus={this.handleRowFocus(item)}
                 key={item.id}
             >
+                <TableCell>
+                    <Checkbox
+                        checked={this.isRowActive(item)}
+                        onClick={this.handleCheckClick(item)}
+                    />
+                </TableCell>
 				<TableCell>{item.name}</TableCell>
 				<TableCell>{item.cost}</TableCell>
 				<TableCell>{item.currency}</TableCell>
@@ -137,6 +144,7 @@ class CostsTable extends Component {
 		return (
 			<Table>
 				<TableHead>
+                    <TableColumn width='22px'/>
 					{this.renderColumns()}
 				</TableHead>
 				<TableBody className='tableStyle'>

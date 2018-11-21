@@ -117,7 +117,6 @@ class CostsTable extends Component {
 	}
 
 	handleDeleteCost = () => {
-		console.log('DEL');
 		const { onDeleteCost } = this.props;
 
 		onDeleteCost();
