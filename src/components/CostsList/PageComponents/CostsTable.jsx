@@ -33,7 +33,7 @@ class CostsTable extends Component {
         sortOrder: 1
     }
 
-    sort = (data) => {
+    sortTable = (data) => {
         if (this.state.sortedBy === undefined) {
             return data;
         }
@@ -102,7 +102,7 @@ class CostsTable extends Component {
 
 	renderRows = () => {
 		const { costsArray } = this.props;
-		const sortedArray = this.sort(costsArray.slice());
+		const sortedArray = this.sortTable(costsArray.slice());
 
 		return sortedArray.map(item => (
 			<TableRow key={item.id}>
