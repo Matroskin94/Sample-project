@@ -10,22 +10,23 @@ import {
 	SortOrder
 } from 'ufs-ui';
 
+import { noop } from '../../../utils/common';
+
 import CONVERTION from '../../../constants/exchangeRates';
 import CURRENCY from '../../../constants/currency';
 import COSTS_COLUMNS from '../../../constants/tableColumns';
 
-const TABLE_STYLE = {
-	height: '185px',
-    overflowY: 'auto'
-};
+import './styles/tableStyles.css';
 
 class CostsTable extends Component {
 	static propTypes = {
-        costsArray: PropTypes.array
+        costsArray: PropTypes.array,
+        onRowFocus: PropTypes.func,
     };
 
     static defaultProps = {
-        costsArray: []
+        costsArray: [],
+        onRowFocus: noop
     };
 
     state = {
@@ -87,6 +88,18 @@ class CostsTable extends Component {
         this.setState({ sortedBy, sortOrder });
     }
 
+    handleRowFocus = item => () => {
+        const { onRowFocus } = this.props;
+
+        onRowFocus(item);
+    }
+
+    handleRowBlur = item => () => {
+        const { onRowBlur } = this.props;
+
+        onRowBlur(item);
+    }
+
 	renderColumns = () => {
 		return COSTS_COLUMNS.map(item => (
 			<TableColumn
@@ -105,12 +118,16 @@ class CostsTable extends Component {
 		const sortedArray = this.sortTable(costsArray.slice());
 
 		return sortedArray.map(item => (
-			<TableRow key={item.id}>
-				<TableCell key='name'>{item.name}</TableCell>
-				<TableCell key='cost'>{item.cost}</TableCell>
-				<TableCell key='currency'>{item.currency}</TableCell>
-				<TableCell key='date'>{item.date}</TableCell>
-				<TableCell key='costType'>{item.costType}</TableCell>
+			<TableRow
+                onBlur={this.handleRowBlur(item)}
+                onFocus={this.handleRowFocus(item)}
+                key={item.id}
+            >
+				<TableCell>{item.name}</TableCell>
+				<TableCell>{item.cost}</TableCell>
+				<TableCell>{item.currency}</TableCell>
+				<TableCell>{item.date}</TableCell>
+				<TableCell>{item.costType}</TableCell>
 			</TableRow>
 		));
 	}
@@ -122,7 +139,7 @@ class CostsTable extends Component {
 				<TableHead>
 					{this.renderColumns()}
 				</TableHead>
-				<TableBody style={TABLE_STYLE}>
+				<TableBody className='tableStyle'>
 					{this.renderRows()}
 				</TableBody>
 			</Table>

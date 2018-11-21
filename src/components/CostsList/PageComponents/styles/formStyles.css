@@ -1,0 +1,14 @@
+.addBtn {
+	margin-bottom: 0;
+}
+
+.dateInput {
+	margin-top: 0;
+	margin-buttom: 0;
+	vertical-align: bottom;
+}
+
+.inlineSelect {
+	display: inline-block;
+	width: 225px;
+}

@@ -14,29 +14,26 @@ import {
     Button
 } from 'ufs-ui';
 
+import { noop } from '../../../utils/common';
+
 import { COSTS_TYPE } from '../../../constants/common';
 import CURRENCY from '../../../constants/currency';
 
 import { getFormatedDate } from '../../../utils/common';
 
-const MARGIN_STYLE = {
-	marginTop: '0',
-	marginButtom: '0',
-	verticalAlign: 'bottom'
-};
-
-const DISPLAY_INLINE = {
-	display: 'inline-block',
-	width: '225px'
-}
+import './styles/formStyles.css';
 
 class CostsTable extends Component {
 	static propTypes = {
-        onAddCost: PropTypes.func
+        onAddCost: PropTypes.func,
+        onDeleteCost: PropTypes.func,
+        isDeleteDisabled: PropTypes.bool
     };
 
     static defaultProps = {
-        onAddCost: []
+        onAddCost: noop,
+        onDeleteCost: noop,
+        isDeleteDisabled: true
     };
 
 	state = {
@@ -119,6 +116,13 @@ class CostsTable extends Component {
 		}
 	}
 
+	handleDeleteCost = () => {
+		console.log('DEL');
+		const { onDeleteCost } = this.props;
+
+		onDeleteCost();
+	}
+
 	render() {
 		const {
 			costType,
@@ -129,6 +133,8 @@ class CostsTable extends Component {
 			costError,
 			date
 		} = this.state;
+
+		const { isDeleteDisabled } = this.props;
 
 		return (
 			<div>
@@ -156,7 +162,6 @@ class CostsTable extends Component {
 						/>
 						<DateInput
 							small
-							style={MARGIN_STYLE}
 							value={date}
 							onChange={this.handleInputChange('date')}
 							format="YYYY-MM-DD"
@@ -167,7 +172,7 @@ class CostsTable extends Component {
 				<Row>
 					<Col md={12}>
 						<Select
-							style={DISPLAY_INLINE}
+							className='inlineSelect'
 							type={SelectType.DASHED}
 							caption="Тип расхода"
 							value={costType}
@@ -190,7 +195,12 @@ class CostsTable extends Component {
 				</Row>
 				<Row>
 					<Col md={12}>
-						<Button onClick={this.handleAddCost}>Добавить покупку</Button>
+						<Button onClick={this.handleAddCost}>
+							Добавить покупку
+						</Button>
+						<Button disabled={isDeleteDisabled} onClick={this.handleDeleteCost}>
+							Удалить покупку
+						</Button>
 					</Col>
 				</Row>
 			</div>

@@ -6,7 +6,6 @@ import {
     MenuSideTop,
     MenuItem,
     IconType,
-    Header,
     Content
 } from "ufs-ui";
 
@@ -25,9 +24,6 @@ const App = props => (
 		            <MenuItem title="Расходы" icon={IconType.MENU_CATALOG} pressed />
 		        </MenuSideTop>
 	        </Sidebar>
-	        <Header>
-	        	<h1>Таблица расходов</h1>
-	        </Header>
 	        <Content>
 	        	<CostsList />
 	        </Content>

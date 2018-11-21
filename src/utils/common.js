@@ -3,3 +3,5 @@ export const getFormatedDate = date => {
 			+ date.getMonth() + 1 + '-'
 			+ date.getDate();
 };
+
+export const noop = () => {};
